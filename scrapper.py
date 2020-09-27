@@ -29,7 +29,6 @@ bitcoin_price = int(bitcoin_price)/100
 ethereum_data = soup.find(href="/currencies/ethereum/markets/")
 print("Ethereum Price:", ethereum_data.text)
 ethereum_price = ethereum_data.text[1:len(ethereum_data.text)]
-ethereum_price = ethereum_price[0:comma] + ethereum_price[comma+1:len(ethereum_price)]
 ethereum_price = ethereum_price[0:-3] + ethereum_price[-2:len(ethereum_price)]
 ethereum_price = int(ethereum_price)/100
 
@@ -46,7 +45,9 @@ d = {'Date': [d1], 'Time': [timestr], 'BTC': [bitcoin_price],
 df = pd.DataFrame(data=d)
 print(df)
 
+'''
 if not os.path.isfile('prices.csv'):
     df.to_csv('prices.csv', header = 'column_names')
 else:
-    df.to_csv('prices.csv', mode='a', header=False) 
+    df.to_csv('prices.csv', mode='a', header=False)
+'''
