@@ -1,10 +1,9 @@
+from bs4 import BeautifulSoup
 import requests
-import os
+import pandas as pd
 from datetime import date
 from datetime import datetime
-
-from bs4 import BeautifulSoup
-import pandas as pd
+import os
 
 
 page = requests.get("https://coinmarketcap.com/")
@@ -18,36 +17,32 @@ now = datetime.now()
 timestr = now.strftime("%H:%M:%S")
 print("Current Time:", timestr)
 
-bitcoin_data = soup.find(href="/currencies/bitcoin/markets/")
-print("BTC Price:", bitcoin_data.text)
-bitcoin_price = bitcoin_data.text[1:len(bitcoin_data.text)]
-comma = bitcoin_price.find(",")
-bitcoin_price = bitcoin_price[0:comma] + bitcoin_price[comma+1:len(bitcoin_price)]
-bitcoin_price = bitcoin_price[0:-3] + bitcoin_price[-2:len(bitcoin_price)]
-bitcoin_price = int(bitcoin_price)/100
+btc = soup.find(href="/currencies/bitcoin/markets/")
+print("BTC Price:", btc.text)
+price_btc = btc.text[1:len(btc.text)]
+comma = price_btc.find(",")
+price_btc = price_btc[0:comma] +price_btc[comma+1:len(price_btc)]
+price_btc = int(price_btc[0:-3] +price_btc[-2:len(price_btc)])/100
 
-ethereum_data = soup.find(href="/currencies/ethereum/markets/")
-print("Ethereum Price:", ethereum_data.text)
-ethereum_price = ethereum_data.text[1:len(ethereum_data.text)]
-ethereum_price = ethereum_price[0:-3] + ethereum_price[-2:len(ethereum_price)]
-ethereum_price = int(ethereum_price)/100
+eth = soup.find(href="/currencies/ethereum/markets/")
+print("Ethereum Price:", eth.text)
+price_eth = eth.text[1:len(eth.text)]
+price_eth = price_eth[0:comma] +price_eth[comma+1:len(price_eth)]
+price_eth = int(price_eth[0:-3] +price_eth[-2:len(price_eth)])/100
 
-ripple_data = soup.find(href="/currencies/xrp/markets/")
-print("Ripple Price:", ripple_data.text)
-ripple_price = ripple_data.text[1:len(ripple_data.text)]
+xrp = soup.find(href="/currencies/xrp/markets/")
+print("Ripple Price:", xrp.text)
+price_xrp = xrp.text[1:len(xrp.text)]
 # Since XRP is below 1 dollar, we take everything after the point
-point = ripple_price.find(".")
-ripple_price = ripple_price[point+1:len(ripple_price)]
-ripple_price = int(ripple_price)/10**(len(ripple_price))
+point = price_xrp.find(".")
+price_xrp = price_xrp[point+1:len(price_xrp)]
+price_xrp = int(price_xrp)/10**(len(price_xrp))
 
-d = {'Date': [d1], 'Time': [timestr], 'BTC': [bitcoin_price],
-     'ETH': [ethereum_price], 'XRP': [ripple_price]}
+d = {'Date': [d1], 'Time': [timestr], 'BTC': [price_btc], 'ETH': [price_eth], 'XRP': [price_xrp]}
 df = pd.DataFrame(data=d)
-print(df)
 
-'''
+
 if not os.path.isfile('prices.csv'):
     df.to_csv('prices.csv', header = 'column_names')
 else:
-    df.to_csv('prices.csv', mode='a', header=False)
-'''
+    df.to_csv('prices.csv', mode='a', header=False) 
