@@ -27,7 +27,6 @@ price_btc = int(price_btc[0:-3] +price_btc[-2:len(price_btc)])/100
 eth = soup.find(href="/currencies/ethereum/markets/")
 print("Ethereum Price:", eth.text)
 price_eth = eth.text[1:len(eth.text)]
-price_eth = price_eth[0:comma] +price_eth[comma+1:len(price_eth)]
 price_eth = int(price_eth[0:-3] +price_eth[-2:len(price_eth)])/100
 
 xrp = soup.find(href="/currencies/xrp/markets/")
@@ -40,6 +39,7 @@ price_xrp = int(price_xrp)/10**(len(price_xrp))
 
 d = {'Date': [d1], 'Time': [timestr], 'BTC': [price_btc], 'ETH': [price_eth], 'XRP': [price_xrp]}
 df = pd.DataFrame(data=d)
+print(df)
 
 
 if not os.path.isfile('prices.csv'):
